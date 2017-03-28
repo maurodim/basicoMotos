@@ -290,6 +290,7 @@ public class SeleccionDeClientes extends javax.swing.JInternalFrame {
             IngresoDePedidos.cliT=cliT;
             IngresoDePedidos.jLabel10.setText(cliT.getRazonSocial());
             IngresoDePedidos.jTextField1.requestFocus();
+            
         }
         
         this.dispose();

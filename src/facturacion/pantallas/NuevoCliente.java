@@ -173,11 +173,7 @@ public class NuevoCliente extends javax.swing.JInternalFrame {
        }else{
            condicion1=1;
        }
-       if(this.jComboBox1.getSelectedIndex() < 4){
-           cli.setEmpresa("sd");
-       }else{
-           cli.setEmpresa("bu");
-       }
+       cli.setEmpresa("bu");
        ListasDePrecios lista=new ListasDePrecios();
        int posLista=this.jComboBox2.getSelectedIndex();
        posLista++;
