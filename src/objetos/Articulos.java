@@ -74,7 +74,30 @@ public class Articulos implements Facturar,Editables,Modificable{
     private Double precioLista3;
     private Double precioLista4;
     private Double precioCosto;
+    private String marca;
+    private String proveedor;
 
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        this.proveedor = proveedor;
+    }
+    
+    
+    public static ConcurrentHashMap getListadoBarr() {
+        return listadoBarr;
+    }
+    
     public Double getPrecioCosto() {
         return precioCosto;
     }
@@ -1398,5 +1421,51 @@ public class Articulos implements Facturar,Editables,Modificable{
         return articulo;
     }
     
+    @Override
+    public void NuevoMasivo(ArrayList listado) {
+        Iterator it=listado.listIterator();
+        Articulos articulo;
+        Integer cantt=0;
+        int total=0;
+        String nuevo="insert into articulos (NOMBRE,COSTO,PRECIO,MINIMO,BARRAS,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
+        while(it.hasNext()){
+            articulo=(Articulos) it.next();
+            //AltaObjeto(artic);
+            nuevo+="('"+articulo.getDescripcionArticulo()+"',"+articulo.getPrecioDeCosto()+",round("+articulo.getPrecioUnitarioNeto()+",2),"+articulo.getStockMinimo()+",'"+articulo.getCodigoDeBarra()+"',"+articulo.getModificaPrecio()+","+articulo.getModificaServicio()+","+articulo.getIdCombo()+",3,"+articulo.getRecargo()+",round("+articulo.getDolar()+",2),round("+articulo.getLista2()+",2),round("+articulo.getLista3()+",2),round("+articulo.getLista4()+",2)),";
+            if(cantt==200){
+                total=nuevo.length();
+                total=total -1;
+                nuevo=nuevo.substring(0,total);
+                tra.guardarRegistro(nuevo);
+                cantt=0;
+                nuevo="insert into articulos (NOMBRE,COSTO,PRECIO,MINIMO,BARRAS,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
+                total=0;
+            }
+            cantt++;
+        }
+        total=nuevo.length();
+        System.out.println("TOTAL SENTENCIA "+total);
+        total=total -1;
+        nuevo=nuevo.substring(0,total);
+        if(nuevo.length() > 153){
+            tra.guardarRegistro(nuevo);
+        }
+    }
+
+    @Override
+    public void ModificadoMasivo(ArrayList listado) {
+        Iterator it=listado.listIterator();
+        Articulos artic;
+        String modificar="update articulos set ";
+        String ww=" where id in(";
+        while(it.hasNext()){
+            artic=(Articulos) it.next();
+            ModificaionObjeto(artic);
+            //modificar+="nombre=case id when "+artic.getNumeroId()+" then '"+artic.getDescripcionArticulo()+"',barras= case id when "+artic.getNumeroId()+" then '"+artic.getCodigoDeBarra()+"'";
+        }
+        //System.out.println(modificar);
+    }
+    
+
     
 }

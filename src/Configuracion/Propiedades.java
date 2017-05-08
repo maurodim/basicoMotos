@@ -11,14 +11,9 @@ import ObjetosBackUp.Backapear;
 import interfaces.Transaccionable;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +46,25 @@ public class Propiedades {
     static String VERIF;
     static String VALOR;
     static String ID;
+    static String DIRECCION;
+    static String TELEFONO;
+
+    public static String getDIRECCION() {
+        return DIRECCION;
+    }
+
+    public static void setDIRECCION(String DIRECCION) {
+        Propiedades.DIRECCION = DIRECCION;
+    }
+
+    public static String getTELEFONO() {
+        return TELEFONO;
+    }
+
+    public static void setTELEFONO(String TELEFONO) {
+        Propiedades.TELEFONO = TELEFONO;
+    }
+    
 
     public static String getVERIF() {
         return VERIF;
@@ -179,6 +193,12 @@ public class Propiedades {
                         case 17:
                             CORREOCCC=linea.substring(8);
                             break;
+                        case 18:
+                            DIRECCION=linea.substring(10);
+                            break;
+                        case 19:
+                            TELEFONO=linea.substring(9);
+                            break;
                         default:
                             break;
                             
@@ -221,44 +241,11 @@ public class Propiedades {
                         Transaccionable tra=new ConeccionInstalacion();
                         tra.guardarRegistro("create database "+BD);
                         tra.guardarRegistro("use "+BD);
-                        tra.guardarRegistro("grant usage on *.* to '"+USUARIO+"'@localhost identified by '"+CLAVE+"';");
-                        tra.guardarRegistro("grant all privileges on "+BD+".* to "+USUARIO+"@localhost  WITH GRANT OPTION;");
-                        tra.guardarRegistro("flush privileges;");
-                        String dest="Configuracion/"+ARCHIVOBK;
-                        
-                        File origen=new File(dest);
-                        //dest=origen.getAbsolutePath().toString();
-                        
-                        //Paths.get(ano, strings)
-                        //dest=dest.replaceAll('\','/');
-                        //String car1="'\'";
-                                String car2="/";
-                                //car1=car1.replaceAll(";","");
-                                //dest=dest.replaceAll("\\", car2);
-                                System.out.println(dest);
-//String dest1=dest.replace( "\" , "/");
-                        /*
-                        File destino=new File(dest);
-                        InputStream in=new FileInputStream(origen);
-                        OutputStream out=new FileOutputStream(dest);
-                        byte[] buf = new byte[1024];
-                        int len;
-
-                        while ((len = in.read(buf)) > 0) {
-                          out.write(buf, 0, len);
-                        }
-                        in.close();
-                        out.close();
-                        */
-                        String sentenciaas="c:/xampp/mysql/bin/mysql -u "+Propiedades.getUSUARIO()+" -p "+Propiedades.getCLAVE()+" "+Propiedades.getBD();
-                        System.out.println("SENTENCIA: "+sentenciaas);
-                        //Process p=Runtime.getRuntime().exec("c:/xampp/mysql/bin/mysql -u root -p  information_schema");
-                        Process p=Runtime.getRuntime().exec(sentenciaas);
-                        p=Runtime.getRuntime().exec("source "+origen.getAbsolutePath());
-                        //tra.guardarRegistro("source C:/"+dest);
-                        //tra.guardarRegistro("quit;");
-                        //Backapear back=new BackUp();
-                        //back.RecuperarArchivos("Configuracion/"+ARCHIVOBK,BD);
+                        tra.guardarRegistro("grant usage on *.* to '"+USUARIO+"'@localhost identified by '"+CLAVE+"'");
+                        tra.guardarRegistro("grant all privileges on "+USUARIO+".* to "+USUARIO+"@localhost");
+                        //tra.guardarRegistro("quit");
+                        Backapear back=new BackUp();
+                        back.RecuperarArchivos("Configuracion/"+ARCHIVOBK,BD);
                         
                     }
             

@@ -5,13 +5,18 @@
  */
 package interfaceGraficas;
 
+import Conversores.Numeros;
 import Excel.LeerExcel;
 import Excel.LeerIva;
+import Excel.Objetos.ColumnasExcel;
 import Excel.pdfsJavaGenerador;
+import interfaces.Modelable;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -28,6 +33,7 @@ public class AbmIva extends javax.swing.JInternalFrame {
     public AbmIva() {
         initComponents();
         this.jFileChooser1.setVisible(false);
+        
     }
 
     /**
@@ -47,7 +53,6 @@ public class AbmIva extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setTitle("Importar Excell");
 
-        jFileChooser1.setCurrentDirectory(new java.io.File("C:\\Users\\mauro\\Documents\\NetBeansProjects\\PocoPrecio"));
         jFileChooser1.setDialogTitle("Seleccion de Origen de Datos");
         jFileChooser1.setOpaque(true);
 
@@ -64,21 +69,18 @@ public class AbmIva extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton3)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -94,8 +96,8 @@ public class AbmIva extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -105,7 +107,7 @@ public class AbmIva extends javax.swing.JInternalFrame {
         File fichero;
         int resultado;
         this.jFileChooser1.setVisible(true);
-
+        
         //FileNameExtensionFilter filtro = new FileNameExtensionFilter("txt","pdf");
         //this.jFileChooser1.setFileFilter(filtro);
         resultado=this.jFileChooser1.showOpenDialog(this);
@@ -121,9 +123,89 @@ public class AbmIva extends javax.swing.JInternalFrame {
         
         LeerExcel leer=new LeerExcel();
         try {
-            leer.leerExcel1(seleccionado);
-            this.dispose();
+            ArrayList columm=leer.LeerColumnas(seleccionado);
             
+            ArrayList enviarC=new ArrayList();
+            ColumnasExcel exCol;
+            SelectorDeColumnas selC=new SelectorDeColumnas();
+            Modelable mod=new ColumnasExcel();
+            DefaultComboBoxModel modeloo=new DefaultComboBoxModel();
+            modeloo=mod.MostrarEnCombo(columm);
+            selC.jComboBox1.setModel(modeloo);
+            selC.jComboBox3.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox6.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox7.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox4.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox5.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox8.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox9.setModel(mod.MostrarEnCombo(columm));
+            selC.jComboBox10.setModel(mod.MostrarEnCombo(columm));
+            selC.setVisible(true);
+            selC.toFront();
+            Double porcentaje=0.00;
+            Double bonificacion=0.00;
+            int sele=0;
+            exCol=new ColumnasExcel();
+            sele=selC.jComboBox1.getSelectedIndex();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("BARRAS");
+            enviarC.add(exCol);
+            sele=selC.jComboBox3.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("NOMBRE");
+            enviarC.add(exCol);
+            sele=selC.jComboBox6.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("COSTO");
+            enviarC.add(exCol);
+            sele=selC.jComboBox7.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("PRECIO");
+            enviarC.add(exCol);
+            
+            sele=selC.jComboBox8.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("PRECIO2");
+            enviarC.add(exCol);
+            sele=selC.jComboBox9.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("PRECIO3");
+            enviarC.add(exCol);
+            sele=selC.jComboBox10.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("PRECIO4");
+            enviarC.add(exCol);
+            
+            sele=selC.jComboBox5.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("MARCA");
+            enviarC.add(exCol);
+            sele=selC.jComboBox4.getSelectedIndex();
+            exCol=new ColumnasExcel();
+            exCol=(ColumnasExcel) columm.get(sele);
+            exCol.setNombreDato("PROVEEDOR");
+            enviarC.add(exCol);
+            
+            
+            System.out.println(selC.jComboBox1.getSelectedIndex()+" -- "+selC.jComboBox3.getSelectedIndex()+" -- "+selC.jComboBox6.getSelectedIndex());
+            
+            int ivva=0;
+            int origen=0;
+            
+            exCol=(ColumnasExcel) columm.get(0);
+            if(exCol.getId()!=null){
+                
+                leer.leerExcel1(seleccionado,enviarC,porcentaje,ivva,origen,bonificacion);
+                
+                this.dispose();
+            }
             /*
             String period=null;
             if(JOptionPane.showConfirmDialog(this,"Procesa el archivo seleccionado?","Aplicar Origen",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE)==1){
