@@ -243,6 +243,7 @@ public class Propiedades {
                         tra.guardarRegistro("use "+BD);
                         tra.guardarRegistro("grant usage on *.* to '"+USUARIO+"'@localhost identified by '"+CLAVE+"'");
                         tra.guardarRegistro("grant all privileges on "+USUARIO+".* to "+USUARIO+"@localhost");
+                        tra.guardarRegistro("flush privileges");
                         //tra.guardarRegistro("quit");
                         Backapear back=new BackUp();
                         back.RecuperarArchivos("Configuracion/"+ARCHIVOBK,BD);

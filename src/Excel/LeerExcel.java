@@ -193,7 +193,7 @@ private void printToConsole(List cellDataList)
                 hssfCell = (HSSFCell) cellTempList.get(j);
                 stringCellValue = hssfCell.toString();
                 marca=stringCellValue.replaceAll("'","");
-                barra+=" "+stringCellValue;
+                //barra+=" "+stringCellValue;
             }else{
                 marca="";
             }
@@ -210,7 +210,7 @@ private void printToConsole(List cellDataList)
                     System.err.println(eex);
                 }
                 proveedor=stringCellValue.replaceAll("'","");
-                barra+=" "+stringCellValue;
+                //barra+=" "+stringCellValue;
             }else{
                 proveedor="";
             }
@@ -346,11 +346,11 @@ private void printToConsole(List cellDataList)
                         if(arti.getCodigoDeBarra()!=null){
                             System.err.println("EXISTE EL CODIGO "+arti.getCodigoDeBarra());
                             //modeloL.addElement("EXISTE EL CODIGO "+arti.getCodigoDeBarra()+".....");
-                            arti.setPrecioCosto(costo);
-                            arti.setPrecioUnitarioNeto(precio);
-                            arti.setLista2(precio1);
-                            arti.setLista3(precio2);
-                            arti.setLista4(precio3);
+                            if(costo!=null)arti.setPrecioCosto(costo);
+                            if(precio!=null)arti.setPrecioUnitarioNeto(precio);
+                            if(precio1!=null)arti.setLista2(precio1);
+                            if(precio2!=null)arti.setLista3(precio2);
+                            if(precio3!=null)arti.setLista4(precio3);
                             
                             arti.setModificaPrecio(true);
                             arti.setModificaServicio(false);

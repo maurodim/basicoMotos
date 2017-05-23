@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -715,21 +716,33 @@ public class BackUp implements Backapear{
 
     @Override
     public String GenerarArchivos() {
-        String archivoDestino="SubIva/bkPocoPrecio.sql";
-        try {
-            Process p=Runtime.getRuntime().exec("C:/xampp/mysql/bin/mysqldump -h localhost -u pocoprecio -p  pocoprecio2");
-            InputStream is=p.getInputStream();
-            FileOutputStream fos=new FileOutputStream(archivoDestino);
-            byte[] buffer=new byte[1000];
-            int leido=is.read(buffer);
-            while(leido > 0){
-                fos.write(buffer,0,leido);
-                leido=is.read(buffer);
-            }
-            fos.close();
-        } catch (IOException ex) {
-            Logger.getLogger(BackUp.class.getName()).log(Level.SEVERE, null, ex);
+       String path="Configuracion/bbgestionmotos.sql";
+        String archivoDestino="Configuracion/bbgestionmotos.sql";
+        String nombreASubir=Propiedades.getID()+"_bbgestionmotos.sql";
+        String dumpCommand = "C:/xampp/mysql/bin/mysqldump bbgestionmotos -h localhost -u "+Propiedades.getUSUARIO()+" -p"+Propiedades.getCLAVE();
+        Runtime rt = Runtime.getRuntime();
+        File test=new File(path);
+        PrintStream ps;
+
+        try{
+        Process child = rt.exec(dumpCommand);
+        ps=new PrintStream(test);
+        InputStream in = child.getInputStream();
+        int ch;
+        while ((ch = in.read()) != -1) {
+        ps.write(ch);
+        System.out.write(ch);  //to view it by console
         }
+
+        InputStream err = child.getErrorStream();
+        while ((ch = err.read()) != -1) {
+        System.out.write(ch);
+        }
+        }catch(Exception exc) {
+        exc.printStackTrace();
+        }
+        
+        
         return archivoDestino;
     }
 
