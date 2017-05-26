@@ -48,7 +48,7 @@ public class ConeccionInstalacion implements Transaccionable{
 			//Class.forName(driver1).newInstance();
                     dataSource.setUser("root");//maurodim
                     dataSource.setDatabaseName("information_schema");//maurodim_lseriea
-                    dataSource.setPassword("");//mau*2012
+                    dataSource.setPassword("mauro");//mau*2012
                     dataSource.setServerName("localhost");//201.235.253.65
                     con=dataSource.getConnection();
                 //st=dbConnection.createStatement();

@@ -47,16 +47,16 @@ public class ArticulosMod extends javax.swing.JInternalFrame {
         this.jTextField4.setText(String.valueOf(arti.getPrecioDeCosto()));
         this.jTextField5.setText(String.valueOf(arti.getPrecioUnitarioNeto()));
         this.jTextField7.setText(String.valueOf(arti.getCodigoDeBarra()));
-        this.jTextField6.setText(String.valueOf(arti.getLista2()));
-        this.jTextField9.setText(String.valueOf(arti.getLista3()));
+        this.jTextField6.setText(String.valueOf(arti.getLista4()));
+        this.jTextField9.setText(String.valueOf(arti.getLista2()));
         this.jCheckBox1.setSelected(arti.getModificaPrecio());
         this.jTextField2.setText(String.valueOf(arti.getDolar()));
         this.jLabel15.setText("$ "+String.valueOf(arti.getPrecioCosto()));
         this.jLabel16.setText("$ "+String.valueOf(arti.getPrecioLista1()));
-        this.jTextField11.setText(String.valueOf(arti.getLista4()));
-        this.jLabel17.setText("$ "+String.valueOf(arti.getPrecioLista2()));
-        this.jLabel18.setText("$ "+String.valueOf(arti.getPrecioLista3()));
-        this.jLabel19.setText("$ "+String.valueOf(arti.getPrecioLista4()));
+        this.jTextField11.setText(String.valueOf(arti.getLista3()));
+        this.jLabel17.setText("$ "+String.valueOf(arti.getPrecioLista4()));
+        this.jLabel18.setText("$ "+String.valueOf(arti.getPrecioLista2()));
+        this.jLabel19.setText("$ "+String.valueOf(arti.getPrecioLista3()));
         //this.jCheckBox2.setSelected(arti.getModificaServicio());
         
         

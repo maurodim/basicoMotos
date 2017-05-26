@@ -27,6 +27,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import objetos.Articulos;
 import objetos.ConeccionLocal;
+import objetos.Dolares;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -48,8 +49,12 @@ public class LeerExcel {
     private int ori;
     private Double desc;
     private ConcurrentHashMap listadoArt;
+    private Double coe1;
+    private Double coe2;
+    private Double coe3;
+    private Double coe4;
     
-   public void leerExcel1(String fileName,ArrayList columnas,Double porcentaje,int iva,int origi,Double descuen) throws SQLException {
+   public void leerExcel1(String fileName,ArrayList columnas,Double porcentaje,int iva,int origi,Double descuen,Double ll1,Double ll2,Double ll3,Double ll4) throws SQLException {
        tra=new ConeccionLocal();
        List cellDataList = new ArrayList();
        colmm=columnas;
@@ -57,6 +62,10 @@ public class LeerExcel {
        iaa=iva;
        ori=origi;
        desc=descuen;
+       coe1=ll1;
+       coe2=ll2;
+       coe3=ll3;
+       coe4=ll4;
 try
 {
 /**
@@ -106,6 +115,8 @@ printToConsole(cellDataList);
 */
 private void printToConsole(List cellDataList)
 {
+    Dolares dolar=new Dolares();
+    Double cotizacionDolar=dolar.cotizacionActual();
     String error="";
     ArrayList lstNuevos=new ArrayList();
     ArrayList lstModificador=new ArrayList();
@@ -165,12 +176,14 @@ private void printToConsole(List cellDataList)
        col1=(ColumnasExcel) colmm.get(0);//codigo
        col2=(ColumnasExcel) colmm.get(1);//descripcion
        col3=(ColumnasExcel) colmm.get(2);//costo
+       /*
        col4=(ColumnasExcel) colmm.get(3);//precio de venta
        col7=(ColumnasExcel) colmm.get(4);//precio de venta 2
        col8=(ColumnasExcel) colmm.get(5);//precio de venta 3
        col9=(ColumnasExcel) colmm.get(6);//precio de venta 4
        col5=(ColumnasExcel) colmm.get(7);//marca
        col6=(ColumnasExcel) colmm.get(8);//proveedor
+       */
       Articulos arti; 
       Facturar fact=new Articulos();
       Editables edi=new Articulos();
@@ -188,6 +201,7 @@ private void printToConsole(List cellDataList)
             String stringCellValue = hssfCell.toString();
             barra=stringCellValue;
             
+            /*
             if(col5.getId()!=null){
                 j=col5.getId();
                 hssfCell = (HSSFCell) cellTempList.get(j);
@@ -197,23 +211,8 @@ private void printToConsole(List cellDataList)
             }else{
                 marca="";
             }
-            
-            if(col6.getId()!=null){
-                
-                j=col6.getId();
-                System.out.println("columna "+j+" "+proveedor+" fila "+i);
-                try{
-                hssfCell = (HSSFCell) cellTempList.get(j);
-                stringCellValue = hssfCell.toString();
-                }catch(java.lang.IndexOutOfBoundsException eex){
-                    stringCellValue="";
-                    System.err.println(eex);
-                }
-                proveedor=stringCellValue.replaceAll("'","");
-                //barra+=" "+stringCellValue;
-            }else{
-                proveedor="";
-            }
+            */
+           
             barra=barra.replaceAll("'","");
             //arti=(Articulos) fact.cargarPorCodigoDeBarra(barra);
             arti=(Articulos) listadoArt.get(barra);
@@ -231,8 +230,10 @@ private void printToConsole(List cellDataList)
                 stringCellValue = hssfCell.toString();
                 descripcion=stringCellValue;
                 descripcion=descripcion.replaceAll("'","");
+                System.out.println(descripcion);
             }
                 //if(j==col2.getId())descripcion=stringCellValue;
+            /*
             if(col4.getId() !=null){
                 j=col4.getId();
             hssfCell = (HSSFCell) cellTempList.get(j);
@@ -302,6 +303,8 @@ private void printToConsole(List cellDataList)
 
             }
             
+            */
+            
             if(col3.getId() !=null){
                 j=col3.getId();
                 try{
@@ -315,27 +318,22 @@ private void printToConsole(List cellDataList)
                         if(stringCellValue.equals(col3.getContenido())){
                             costo=null;
                         }else{
-                            //System.out.println("RENGLON: "+i);
+                            System.out.println("RENGLON: "+i+" contenido "+stringCellValue);
                             stringCellValue=stringCellValue.replaceAll("$","");
+                            stringCellValue=stringCellValue.replaceAll(",",".");
                             costo=Numeros.ConvertirStringADouble(stringCellValue);
 
                         }
                    // }
                     if(costo!=null){
-                        
+                        if(ori==1){
+                            costo=costo / cotizacionDolar;
+                        }
                     
-                        if(desc > 0.00){
-                            
-                            Double costo1=costo * desc;
-                            costo= costo - costo1;
-                        }
-                        if(iaa==1 && ori==1){
+                       if(iaa==1){
                             costo=costo * 1.21;
-                        }
-                        if(porc1 > 0.00){
-                            precio=costo * porc1;
-                            
-                        }
+                       }
+                        
                     }
                         //System.out.println("precio calculado: "+precio);
                     /*    
@@ -344,19 +342,25 @@ private void printToConsole(List cellDataList)
                         }
                     */
                         if(arti.getCodigoDeBarra()!=null){
-                            System.err.println("EXISTE EL CODIGO "+arti.getCodigoDeBarra());
+                            //System.err.println("EXISTE EL CODIGO "+arti.getCodigoDeBarra());
                             //modeloL.addElement("EXISTE EL CODIGO "+arti.getCodigoDeBarra()+".....");
-                            if(costo!=null)arti.setPrecioCosto(costo);
-                            if(precio!=null)arti.setPrecioUnitarioNeto(precio);
-                            if(precio1!=null)arti.setLista2(precio1);
-                            if(precio2!=null)arti.setLista3(precio2);
-                            if(precio3!=null)arti.setLista4(precio3);
+                            if(costo!=null){
+                                arti.setPrecioCosto(costo);
+                            precio=costo * coe1;
+                            arti.setPrecioUnitarioNeto(precio);
+                            precio1=costo * coe2;
+                            arti.setLista2(precio1);
+                            precio2=costo * coe3;
+                            arti.setLista3(precio2);
+                            precio3=costo *coe4;
+                            arti.setLista4(precio3);
                             
                             arti.setModificaPrecio(true);
                             arti.setModificaServicio(false);
                             arti.setMarca(marca);
                             arti.setProveedor(proveedor);
                             lstModificador.add(arti);
+                            }
                             //edi.ModificaionObjeto(arti);
                             //barrr.jProgressBar1.setString("EXISTE EL CODIGO ");
                             
@@ -376,22 +380,32 @@ private void printToConsole(List cellDataList)
                             arti.setDescripcionArticulo(descripcion);
                             arti.setPrecioCosto(costo);
                             arti.setPrecioDeCosto(costo);
-                            arti.setPrecioUnitarioNeto(precio);
+                            
+                            
+                            //arti.setPrecioUnitarioNeto(precio);
                             arti.setPrecioServicio(precio);
                             arti.setModificaPrecio(true);
                             arti.setModificaServicio(false);
                             arti.setRecargo(1.00);
                             arti.setDolar(1.00);
                             arti.setStockMinimo(0.00);
+                            if(costo !=null){
+                             precio=costo * coe1;
+                            arti.setPrecioUnitarioNeto(precio);
+                            precio1=costo * coe2;
                             arti.setLista2(precio1);
+                            precio2=costo * coe3;
                             arti.setLista3(precio2);
+                            precio3=costo *coe4;
                             arti.setLista4(precio3);
+                            
                             arti.setMarca(marca);
                             arti.setProveedor(proveedor);
                             arti.setIdCombo(0);
-                            System.out.println("NO ESTA CARGADO "+arti.getDescripcionArticulo()+" // "+barra);
+                            //System.out.println("NO ESTA CARGADO "+arti.getDescripcionArticulo()+" // "+barra);
                             //modeloL.addElement("NUEVO ARTICULO "+arti.getDescripcionArticulo()+".....");
                             lstNuevos.add(arti);
+                            }
                             //edi.AltaObjeto(arti);
                            // barrr.jProgressBar1.setValue(progrr);
 
@@ -442,7 +456,7 @@ private void printToConsole(List cellDataList)
     guarda.setLstEdit(lstModificador);
     guarda.setLstNew(lstNuevos);
     guarda.Inicio();
-    JOptionPane.showMessageDialog(null,"PROCESO EXITOSO \n CANTIDAD DE FILAS PROCESADAS "+fila);
+    //JOptionPane.showMessageDialog(null,"PROCESO EXITOSO \n CANTIDAD DE FILAS PROCESADAS "+fila);
    }
 public ArrayList LeerColumnas(String fileName){
    ArrayList columnas;

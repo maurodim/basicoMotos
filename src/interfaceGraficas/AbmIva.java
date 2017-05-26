@@ -10,6 +10,7 @@ import Excel.LeerExcel;
 import Excel.LeerIva;
 import Excel.Objetos.ColumnasExcel;
 import Excel.pdfsJavaGenerador;
+import Sucursales.ListasDePrecios;
 import interfaces.Modelable;
 import java.io.File;
 import java.sql.SQLException;
@@ -134,12 +135,33 @@ public class AbmIva extends javax.swing.JInternalFrame {
             selC.jComboBox1.setModel(modeloo);
             selC.jComboBox3.setModel(mod.MostrarEnCombo(columm));
             selC.jComboBox6.setModel(mod.MostrarEnCombo(columm));
-            selC.jComboBox7.setModel(mod.MostrarEnCombo(columm));
+            //selC.jComboBox7.setModel(mod.MostrarEnCombo(columm));
             selC.jComboBox4.setModel(mod.MostrarEnCombo(columm));
-            selC.jComboBox5.setModel(mod.MostrarEnCombo(columm));
-            selC.jComboBox8.setModel(mod.MostrarEnCombo(columm));
-            selC.jComboBox9.setModel(mod.MostrarEnCombo(columm));
-            selC.jComboBox10.setModel(mod.MostrarEnCombo(columm));
+            ListasDePrecios lista=new ListasDePrecios();
+            ArrayList lstPre=ListasDePrecios.Listado();
+            lista=(ListasDePrecios) lstPre.get(0);
+            Double muestaC=lista.getCoeficiente() *100;
+            muestaC=muestaC - 100;
+            selC.jTextField1.setText(String.valueOf(muestaC));
+            lista=(ListasDePrecios) lstPre.get(1);
+            muestaC=lista.getCoeficiente() *100;
+            muestaC=muestaC - 100;
+            selC.jTextField2.setText(String.valueOf(muestaC));
+            lista=(ListasDePrecios) lstPre.get(2);
+            muestaC=lista.getCoeficiente() *100;
+            muestaC=muestaC - 100;
+            selC.jTextField3.setText(String.valueOf(muestaC));
+            lista=(ListasDePrecios) lstPre.get(3);
+            muestaC=lista.getCoeficiente() *100;
+            muestaC=muestaC - 100;
+            selC.jTextField4.setText(String.valueOf(muestaC));
+            
+            //Double muestaC=
+            //selC.jComboBox5.setModel(mod.MostrarEnCombo(columm));
+            //selC.jComboBox8.setModel(mod.MostrarEnCombo(columm));
+            //selC.jComboBox9.setModel(mod.MostrarEnCombo(columm));
+            //selC.jComboBox10.setModel(mod.MostrarEnCombo(columm));
+            
             selC.setVisible(true);
             selC.toFront();
             Double porcentaje=0.00;
@@ -160,49 +182,24 @@ public class AbmIva extends javax.swing.JInternalFrame {
             exCol=(ColumnasExcel) columm.get(sele);
             exCol.setNombreDato("COSTO");
             enviarC.add(exCol);
-            sele=selC.jComboBox7.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("PRECIO");
-            enviarC.add(exCol);
+            int ivva=0;
+            if(selC.jRadioButton1.isSelected())ivva=1;
+            if(selC.jRadioButton2.isSelected())ivva=0;
             
-            sele=selC.jComboBox8.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("PRECIO2");
-            enviarC.add(exCol);
-            sele=selC.jComboBox9.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("PRECIO3");
-            enviarC.add(exCol);
-            sele=selC.jComboBox10.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("PRECIO4");
-            enviarC.add(exCol);
-            
-            sele=selC.jComboBox5.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("MARCA");
-            enviarC.add(exCol);
-            sele=selC.jComboBox4.getSelectedIndex();
-            exCol=new ColumnasExcel();
-            exCol=(ColumnasExcel) columm.get(sele);
-            exCol.setNombreDato("PROVEEDOR");
-            enviarC.add(exCol);
-            
+            Double listaP=Numeros.ConvertirStringADouble(selC.jTextField1.getText());
+            Double listaM=Numeros.ConvertirStringADouble(selC.jTextField2.getText());
+            Double listaN=Numeros.ConvertirStringADouble(selC.jTextField3.getText());
+            Double lista4=Numeros.ConvertirStringADouble(selC.jTextField4.getText());
             
             System.out.println(selC.jComboBox1.getSelectedIndex()+" -- "+selC.jComboBox3.getSelectedIndex()+" -- "+selC.jComboBox6.getSelectedIndex());
             
-            int ivva=0;
+            //int ivva=0;
             int origen=0;
-            
+            if(selC.jRadioButton4.isSelected())origen=1;
             exCol=(ColumnasExcel) columm.get(0);
             if(exCol.getId()!=null){
                 
-                leer.leerExcel1(seleccionado,enviarC,porcentaje,ivva,origen,bonificacion);
+                leer.leerExcel1(seleccionado,enviarC,porcentaje,ivva,origen,bonificacion,listaP,listaM,listaN,lista4);
                 
                 this.dispose();
             }

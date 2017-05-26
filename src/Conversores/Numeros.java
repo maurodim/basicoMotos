@@ -99,12 +99,20 @@ public class Numeros {
         return fechaVal1;
     }
     public static Double ConvertirStringADouble(String num){
+        Double dd;
         if(num.equals("")){
-            num="0.00";
+            //num="0";
+            dd=0.00;
+        }else{
+            num=num.replace(",",".");
+            System.out.println(" rsultado "+num);
+            try{
+            dd=Double.parseDouble(num);
+            }catch(java.lang.NumberFormatException ex){
+                System.err.println(ex+"ENTRO ACA");
+                dd=0.00;
+            }
         }
-        num=num.replace(",",".");
-        System.out.println(" rsultado "+num);
-        Double dd=Double.parseDouble(num);
         return dd;
     }
     

@@ -38,8 +38,8 @@ public class GuardarDatosExcel implements Runnable{
     public void Inicio() {
         hilo=new Thread(this);
         hilo.start();
-        hilo2=new Thread(this);
-        hilo2.start();
+        //hilo2=new Thread(this);
+        //hilo2.start();
     }
     
     
@@ -48,14 +48,13 @@ public class GuardarDatosExcel implements Runnable{
         Thread ct=Thread.currentThread();
         Modificable mod=new Articulos();
         //while(ct==hilo){
-            
-            mod.NuevoMasivo(this.lstNew);
+            if(this.lstNew.size() > 0)mod.NuevoMasivo(this.lstNew);
             
         //}
         
         //while(ct==hilo2){
             
-             mod.ModificadoMasivo(this.lstEdit);
+            if(this.lstEdit.size() >0) mod.ModificadoMasivo(this.lstEdit);
         //}
         System.err.println("TERMINADOOOOOO");
     }

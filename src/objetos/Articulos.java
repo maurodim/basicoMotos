@@ -11,6 +11,7 @@ import interfaces.Editables;
 import interfaces.Modificable;
 import interfaces.Transaccionable;
 import interfacesPrograma.Facturar;
+import static java.lang.Thread.sleep;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -1099,7 +1100,7 @@ public class Articulos implements Facturar,Editables,Modificable{
     public Boolean ModificaionObjeto(Object objeto) {
         Articulos articulo=(Articulos)objeto;
         Boolean ch=false;
-        String sql="update articulos set NOMBRE='"+articulo.getDescripcionArticulo()+"',lista2="+articulo.getLista2()+",lista3="+articulo.getLista3()+",lista4="+articulo.getLista4()+",dolar="+articulo.getDolar()+",COSTO="+articulo.getPrecioDeCosto()+",PRECIO=round("+articulo.getPrecioUnitarioNeto()+",2),MINIMO="+articulo.getStockMinimo()+",BARRAS ='"+articulo.getCodigoDeBarra()+"',modificaPrecio="+articulo.getModificaPrecio()+",modificaServicio="+articulo.getModificaServicio()+",actualizacion=2,idcombo="+articulo.getIdCombo()+",recargo="+articulo.getRecargo()+" where ID="+articulo.getNumeroId();
+        String sql="update articulos set NOMBRE='"+articulo.getDescripcionArticulo()+"',lista2=round("+articulo.getLista2()+",2),lista3=round("+articulo.getLista3()+",2),lista4=round("+articulo.getLista4()+",2),dolar="+articulo.getDolar()+",COSTO=round("+articulo.getPrecioDeCosto()+",2),PRECIO=round("+articulo.getPrecioUnitarioNeto()+",2),MINIMO="+articulo.getStockMinimo()+",BARRAS ='"+articulo.getCodigoDeBarra()+"',modificaPrecio="+articulo.getModificaPrecio()+",modificaServicio="+articulo.getModificaServicio()+",actualizacion=2,idcombo="+articulo.getIdCombo()+",recargo="+articulo.getRecargo()+" where ID="+articulo.getNumeroId();
         Transaccionable tra=new Conecciones();
         ch=tra.guardarRegistro(sql);
         //sql="insert into actualizaciones (iddeposito,idobjeto,estado) values (1,1,2),(2,1,2),(3,1,2),(4,1,2),(5,1,2),(6,1,2),(7,1,2)";
@@ -1120,11 +1121,10 @@ public class Articulos implements Facturar,Editables,Modificable{
     public Boolean EliminacionDeObjeto(Object objeto) {
         Articulos articulo=(Articulos)objeto;
         Boolean verif=false;
-        String sql="update articulos set INHABILITADO=1, actualizacion=4 where ID="+articulo.getNumeroId();
+        String sql="delete from articulos where ID="+articulo.getNumeroId();
         Transaccionable tra=new Conecciones();
         verif=tra.guardarRegistro(sql);
-        sql="insert into actualizaciones (iddeposito,idobjeto,estado) values (1,1,4),(2,1,4),(3,1,4),(4,1,4),(5,1,4),(6,1,4),(7,1,4)";
-        tra.guardarRegistro(sql);
+        
         
         return verif;
     }
@@ -1427,41 +1427,77 @@ public class Articulos implements Facturar,Editables,Modificable{
         Articulos articulo;
         Integer cantt=0;
         int total=0;
-        String nuevo="insert into articulos (NOMBRE,COSTO,PRECIO,MINIMO,BARRAS,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
+        Integer itemss=0;
+        String nuevo="insert into articulos (BARRAS,NOMBRE,COSTO,PRECIO,MINIMO,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
+        ArrayList lstMas=new ArrayList();
+        String descri;
         while(it.hasNext()){
+            articulo=new Articulos();
             articulo=(Articulos) it.next();
+            System.out.println("BARRAS: "+articulo.getCodigoDeBarra()+" cantt "+cantt+" item "+itemss);
+            descri=articulo.getDescripcionArticulo().trim().replace("/","-");
             //AltaObjeto(artic);
-            nuevo+="('"+articulo.getDescripcionArticulo()+"',"+articulo.getPrecioDeCosto()+",round("+articulo.getPrecioUnitarioNeto()+",2),"+articulo.getStockMinimo()+",'"+articulo.getCodigoDeBarra()+"',"+articulo.getModificaPrecio()+","+articulo.getModificaServicio()+","+articulo.getIdCombo()+",3,"+articulo.getRecargo()+",round("+articulo.getDolar()+",2),round("+articulo.getLista2()+",2),round("+articulo.getLista3()+",2),round("+articulo.getLista4()+",2)),";
-            if(cantt==200){
+            nuevo+="('"+articulo.getCodigoDeBarra()+"','"+descri+"',round("+articulo.getPrecioDeCosto()+",2),round("+articulo.getPrecioUnitarioNeto()+",2),"+articulo.getStockMinimo()+","+articulo.getModificaPrecio()+","+articulo.getModificaServicio()+","+articulo.getIdCombo()+",3,"+articulo.getRecargo()+",round("+articulo.getDolar()+",2),round("+articulo.getLista2()+",2),round("+articulo.getLista3()+",2),round("+articulo.getLista4()+",2)),";
+            if(cantt==100){
                 total=nuevo.length();
                 total=total -1;
                 nuevo=nuevo.substring(0,total);
-                tra.guardarRegistro(nuevo);
+                //tra.guardarRegistro(nuevo);
+                lstMas.add(nuevo);
+                nuevo=null;
+                System.err.println(total);
+                System.err.println("tamaño array:"+lstMas.size());
+                System.err.println(cantt);
+                System.err.println(nuevo);
+                
                 cantt=0;
-                nuevo="insert into articulos (NOMBRE,COSTO,PRECIO,MINIMO,BARRAS,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
+                nuevo="insert into articulos (BARRAS,NOMBRE,COSTO,PRECIO,MINIMO,modificaPrecio,modificaServicio,idcombo,actualizacion,recargo,dolar,lista2,lista3,lista4) values ";
                 total=0;
             }
             cantt++;
+            itemss++;
         }
-        total=nuevo.length();
+        total=lstMas.size();
         System.out.println("TOTAL SENTENCIA "+total);
         total=total -1;
-        nuevo=nuevo.substring(0,total);
-        if(nuevo.length() > 153){
-            tra.guardarRegistro(nuevo);
+        if(total > -1){
+            nuevo=nuevo.substring(0,total);
+            lstMas.add(nuevo);
+        }
+        //nuevo="";
+        String sinta;
+        Transaccionable tt=new ConeccionLocal();
+        Iterator itlM=lstMas.listIterator();
+        int aa=0;
+        while(itlM.hasNext()){
+            sinta=(String) itlM.next();
+            
+            try {
+                sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tt.guardarRegistro(sinta);
+            System.out.println(aa+++" - "+sinta);
+            
+            sinta=null;
         }
     }
 
     @Override
     public void ModificadoMasivo(ArrayList listado) {
         Iterator it=listado.listIterator();
-        Articulos artic;
+        Articulos articulo;
         String modificar="update articulos set ";
         String ww=" where id in(";
+        String sql;
+        Transaccionable tt=new ConeccionLocal();
         while(it.hasNext()){
-            artic=(Articulos) it.next();
-            ModificaionObjeto(artic);
-            //modificar+="nombre=case id when "+artic.getNumeroId()+" then '"+artic.getDescripcionArticulo()+"',barras= case id when "+artic.getNumeroId()+" then '"+artic.getCodigoDeBarra()+"'";
+            articulo=(Articulos) it.next();
+            sql="update articulos set NOMBRE='"+articulo.getDescripcionArticulo()+"',lista2=round("+articulo.getLista2()+",2),lista3=round("+articulo.getLista3()+",2),lista4=round("+articulo.getLista4()+",2),dolar="+articulo.getDolar()+",COSTO=round("+articulo.getPrecioDeCosto()+",2),PRECIO=round("+articulo.getPrecioUnitarioNeto()+",2),MINIMO="+articulo.getStockMinimo()+",BARRAS ='"+articulo.getCodigoDeBarra()+"',modificaPrecio="+articulo.getModificaPrecio()+",modificaServicio="+articulo.getModificaServicio()+",actualizacion=2,idcombo="+articulo.getIdCombo()+",recargo="+articulo.getRecargo()+" where ID="+articulo.getNumeroId();
+            tt.guardarRegistro(sql);
+            System.out.println(sql);
+//modificar+="nombre=case id when "+artic.getNumeroId()+" then '"+artic.getDescripcionArticulo()+"',barras= case id when "+artic.getNumeroId()+" then '"+artic.getCodigoDeBarra()+"'";
         }
         //System.out.println(modificar);
     }

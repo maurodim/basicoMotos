@@ -5,6 +5,7 @@
 package Sucursales;
 
 import interfaceGraficas.Inicio;
+import interfaces.Componable;
 import interfaces.Editables;
 import interfaces.Transaccionable;
 import java.sql.ResultSet;
@@ -15,6 +16,9 @@ import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
 import objetos.ConeccionLocal;
 import objetos.Conecciones;
 
@@ -22,7 +26,7 @@ import objetos.Conecciones;
  *
  * @author mauro
  */
-public class ListasDePrecios implements Editables{
+public class ListasDePrecios implements Editables,Componable{
     private static ConcurrentHashMap listadoDeListas=new ConcurrentHashMap();
     private Integer id;
     private Double coeficiente;
@@ -109,12 +113,34 @@ public class ListasDePrecios implements Editables{
             }
     public static ArrayList Listado(){
         ArrayList listado=new ArrayList();
-        ListasDePrecios rs=new ListasDePrecios();
-         Enumeration<ListasDePrecios> elementos=listadoDeListas.elements();
-            while(elementos.hasMoreElements()){
-                rs=(ListasDePrecios)elementos.nextElement();
-                listado.add(rs);
-                }
+        Transaccionable tra;
+         /*
+         if(Inicio.coneccionRemota){
+             tra=new Conecciones();
+         }else{
+         */ 
+             tra=new ConeccionLocal();
+         //}
+        String sql="select * from coeficienteslistas";
+        ResultSet rs=tra.leerConjuntoDeRegistros(sql);
+        try {
+            //listadoDeListas.clear();
+            Integer numero=0;
+            while(rs.next()){
+                ListasDePrecios lista=new ListasDePrecios();
+                lista.setId(rs.getInt("id"));
+                lista.setDesccripcion(rs.getString("descripcion"));
+                lista.setCoeficiente(rs.getDouble("coeficiente"));
+                //numero=lista.getId();
+                listado.add(lista);
+                
+            }
+            rs.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ListasDePrecios.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
         return listado;
     }
 
@@ -138,7 +164,7 @@ public class ListasDePrecios implements Editables{
         Transaccionable tra=new Conecciones();
         Double coe=listaDePrecios.getCoeficiente() / 100;
         coe=coe + 1;
-        String sql="update coeficienteslistas set coeficiente="+coe+",descripcion='"+listaDePrecios.getDesccripcion()+" where id="+listaDePrecios.getId();
+        String sql="update coeficienteslistas set coeficiente="+coe+",descripcion='"+listaDePrecios.getDesccripcion()+"' where id="+listaDePrecios.getId();
         tra.guardarRegistro(sql);
         cargarMap();
         return verif;
@@ -157,6 +183,51 @@ public class ListasDePrecios implements Editables{
 
     @Override
     public ArrayList ListarPorSucursal(Object objeto) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultListModel LlenarList(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultTableModel LlenarTabla(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ComboBoxModel LlenarCombo(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultListModel LlenarListConArray(ArrayList listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultTableModel LlenarTablaConArray(ArrayList listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ComboBoxModel LlenarComboConArray(ArrayList listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int posicionEnCombo(Object objeto, ArrayList listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultTableModel LlenarTablaConArrayEnDolares(ArrayList listado) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DefaultTableModel LlenarTablaConArrayEnMonedas(ArrayList listado, Object moneda) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     }
