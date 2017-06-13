@@ -226,7 +226,9 @@ public class ArticulosAbm extends javax.swing.JInternalFrame {
         if(evt.getKeyCode()==KeyEvent.VK_F1){
             //System.out.println("ENTRO CON F1¡¡¡¡¡");
         Facturar fart=new Articulos();
-        ArrayList listadoDeBusqueda=fart.listadoBusqueda(this.jTextField1.getText().toUpperCase());
+        ArrayList listadoDeBusqueda=new ArrayList();
+        listadoDeBusqueda.clear();
+        listadoDeBusqueda=fart.listadoBusqueda(this.jTextField1.getText().toUpperCase());
         cargarLista(listadoDeBusqueda);    
         }
     }//GEN-LAST:event_jTextField1KeyPressed
@@ -296,7 +298,7 @@ public class ArticulosAbm extends javax.swing.JInternalFrame {
     private void cargarLista(ArrayList lista){
     DefaultListModel modelo=new DefaultListModel();
     Iterator il=lista.listIterator();
-    Articulos art=new Articulos();
+    Articulos art;
     while(il.hasNext()){
         art=(Articulos)il.next();
         //System.out.println("DESCRIPCION "+art.getDescripcionArticulo());
